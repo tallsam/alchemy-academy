@@ -1,14 +1,23 @@
 import { useState } from "react";
 import server from "./server";
+import Sign from "./Sign";
 
-function Transfer({ address, setBalance, signedMessage }) {
+function Transfer({ address, setBalance }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [message, setMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
+
   async function transfer(evt) {
     evt.preventDefault();
+    setMessage("send " + sendAmount + " to " + recipient);
+    setShowModal(true);
+
+    // pop up the signature modal
+    // wait for response with signed message.
 
     try {
       const {
@@ -26,29 +35,35 @@ function Transfer({ address, setBalance, signedMessage }) {
   }
 
   return (
-    <form className="container transfer" onSubmit={transfer}>
-      <h1>Send Transaction</h1>
+    <div>
+      <form className="container transfer" onSubmit={transfer}>
+        <h1>Send Transaction</h1>
 
-      <label>
-        Send Amount
-        <input
-          placeholder="1, 2, 3..."
-          value={sendAmount}
-          onChange={setValue(setSendAmount)}
-        ></input>
-      </label>
+        <label>
+          Send Amount
+          <input
+            placeholder="1, 2, 3..."
+            value={sendAmount}
+            onChange={setValue(setSendAmount)}
+          ></input>
+        </label>
 
-      <label>
-        Recipient
-        <input
-          placeholder="Type an address, for example: 0x2"
-          value={recipient}
-          onChange={setValue(setRecipient)}
-        ></input>
-      </label>
+        <label>
+          Recipient
+          <input
+            placeholder="Type an address, for example: 0x2"
+            value={recipient}
+            onChange={setValue(setRecipient)}
+          ></input>
+        </label>
 
-      <input type="submit" className="button" value="Transfer" />
-    </form>
+
+
+        <input type="submit" className="button" value="Transfer" />
+      </form>
+      {showModal && <Sign message={message} setShowModal={setShowModal}></Sign>}
+
+    </div>
   );
 }
 

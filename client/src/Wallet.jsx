@@ -32,10 +32,9 @@ function Wallet({ address, setAddress, balance, setBalance, privateKey, setPriva
       <p>{address.slice(0,10)}...</p>
 
       <label>Message to sign</label>
-      <textarea value="Sign this message to send a transaction"></textarea>
+      <textarea defaultValue="Sign this message to send a transaction"></textarea>
       <label>Signed Message</label>
       <textarea placeholder="Paste the signed message here"></textarea>
-
 
       <div className="balance">Balance: {balance}</div>
     </div>
