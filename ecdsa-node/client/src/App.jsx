@@ -7,6 +7,8 @@ function App() {
   const [balance, setBalance] = useState(0);
   const [address, setAddress] = useState("");
   const [privateKey, setPrivateKey] = useState("");
+  const [publicKey, setPublicKey] = useState("");
+
   const [message, setMessage] = useState("");
   const [signedMessage, setSignedMessage] = useState("");
 
@@ -23,8 +25,10 @@ function App() {
         message={message}
         setSignedMessage={setSignedMessage}
         signedMessage={signedMessage}
+        setPublicKey={setPublicKey}
+        publicKey={publicKey}
       />
-      <Transfer setBalance={setBalance} address={address} signedMessage={signedMessage}/>
+      <Transfer setBalance={setBalance} address={address} signedMessage={signedMessage} privateKey={privateKey}/>
     </div>
   );
 }

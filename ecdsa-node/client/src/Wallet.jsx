@@ -1,13 +1,25 @@
 import server from "./server";
 import * as secp from "ethereum-cryptography/secp256k1";
-import {toHex} from "ethereum-cryptography/utils";
+import { toHex } from "ethereum-cryptography/utils";
+import { keccak256 } from "ethereum-cryptography/keccak";
 
+function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey, publicKey, setPublicKey }) {
 
-function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
-  async function onChange(evt) {
-    const privateKey = evt.target.value;
+  const privateKeys = [
+    { value: '02165ef9df244e707bf1d708a55c2c4d51a5e0a94a43bbe4432707644acef768', label: '02165ef9df244e707bf1d708a55c2c4d51a5e0a94a43bbe4432707644acef768' },
+    { value: '1f6945a43aa4b0e8b895252412074dd2b7f915e723b9584b67898eab3e8cdd17', label: '1f6945a43aa4b0e8b895252412074dd2b7f915e723b9584b67898eab3e8cdd17' },
+    { value: '09abe10262851e1f88e87b4bbd55a04532dae5be884a5630c33ceaf3a88660ed', label: '09abe10262851e1f88e87b4bbd55a04532dae5be884a5630c33ceaf3a88660ed' },
+  ];
+
+  async function onChange(event) {
+    
+    const privateKey = event.target.value;
+    if (privateKey === "") {
+      return;
+    }
     setPrivateKey(privateKey);
-    const address = toHex(secp.getPublicKey(privateKey));
+    setPublicKey(toHex(secp.getPublicKey(privateKey)));
+    const address = '0x' + toHex(keccak256(secp.getPublicKey(privateKey)).slice(-20))
     setAddress(address);
     if (address) {
       const {
@@ -21,20 +33,26 @@ function Wallet({ address, setAddress, balance, setBalance, privateKey, setPriva
 
   return (
     <div className="container wallet">
-      <h1>Your Wallet</h1>
-
+      <h1>Wallet</h1>
       <label>
-       Private Key
-        <input placeholder="Type a private key" value={privateKey} onChange={onChange}></input>
+        Choose a Private Key
+        <select onChange={onChange} value={privateKey}>
+          <option key="">Select one!</option>
+          {privateKeys.map((pk) => (
+            <option key={pk.value} value={pk.value}>
+              {pk.value}
+            </option>
+          ))}
+        </select>
       </label>
 
-      <label>Address</label>
-      <p>{address.slice(0,10)}...</p>
+      <label>Public Key
+        <textarea disabled width="40" value={publicKey}></textarea>
+      </label>
 
-      <label>Message to sign</label>
-      <textarea defaultValue="Sign this message to send a transaction"></textarea>
-      <label>Signed Message</label>
-      <textarea placeholder="Paste the signed message here"></textarea>
+      <label>Address
+        <textarea disabled width="40" value={address}></textarea>
+      </label>
 
       <div className="balance">Balance: {balance}</div>
     </div>
